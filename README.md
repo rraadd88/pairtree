@@ -70,15 +70,17 @@ For more details on installation, please see [here](https://www.sciencedirect.co
    tree. This algorithm was published in [Jia et al.](https://arxiv.org/abs/1811.01129),
    and uses the authors' implementation with minor modifications.
 
-        git clone https://github.com/jwintersinger/pairtree
+        # if the repo is not cloned already
+        # git clone https://github.com/jwintersinger/pairtree
         cd pairtree/lib
         git clone https://github.com/ethanumn/projectppm
         cd projectppm
         bash make.sh
 
-4. Download plotting requirements. Unfortunately, not all plotting requirements Pairtree uses are available via conda.
+5. Download plotting requirements. Unfortunately, not all plotting requirements Pairtree uses are available via conda.
    Instead, we recommend downloading them via pip.  (optional)
 
+        # cd pairtree
         pip3 install -r plot_requirements.txt
 
 
@@ -88,7 +90,11 @@ Examples
 After installing Pairtree, you can test your installation using provided
 example data.
 
-        PTDIR=$HOME/path/to/pairtree
+        # PTDIR=$HOME/path/to/pairtree
+        # or
+        cd pairtree
+        PTDIR=$(pwd)
+        
         cd $PTDIR/example
         mkdir results && cd results
         # Run Pairtree.

@@ -131,23 +131,40 @@ class VCF_To_SSM(SSM_Base_Converter):
             self.in_df.loc[idx, SSM_Columns.VAR_READS] = no_brackets_array_string(variant_reads.tolist())
             self.in_df.loc[idx, SSM_Columns.TOTAL_READS] = no_brackets_array_string((reference_reads + variant_reads).tolist())
 
-    def p_var_read_prob(self):
+    def p_var_read_prob(
+        self,
+        # dbug=False,
+        # dbug=True,
+        ):
         """Computes variant read probability by indexing the variant and reference copy 
         numbers using the format defined for that row"""
         for idx, row in self.sample_data.iterrows():
             if FORMAT_Fields.CN in self.formats.iloc[idx]:
-
+                # FORMAT_Fields.ALT_GT=int(FORMAT_Fields.ALT_GT)
                 # assume genotypes are separated by either '|' or '/'
                 genotypes = row.apply(lambda s: re.split('[\|\/]', s[self.formats[idx].index(FORMAT_Fields.GT)]))
-
+                ## todo: SyntaxWarning: invalid escape sequence '\|'
+                
                 # assume copy numbers are separated by ','
                 copy_numbers = row.apply(lambda s: s[self.formats[idx].index(FORMAT_Fields.CN)].split(","))
 
                 # extract variant read probabilities using genotype and copy number
                 var_read_probs = []
                 for gts, cns in zip(genotypes, copy_numbers):
+                    # if dbug:
+                    #     print(cns,gts,FORMAT_Fields.ALT_GT)
+                    if gts==['0', '0']:
+                        ## inputed no mutations
+                        gts=['0', '1'] 
+                    # else:
+                        # error
+                        # variant_cn = int(cns[gts.index(FORMAT_Fields.ALT_GT)])
+                        #                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        # ValueError: '1' is not in list                        
                     variant_cn = int(cns[gts.index(FORMAT_Fields.ALT_GT)])
                     ref_cn = int(cns[gts.index(FORMAT_Fields.REF_GT)])
+                    # print(variant_cn,ref_cn)
+                    # print(FORMAT_Fields)
                     var_read_probs.append(variant_cn / (variant_cn + ref_cn))
 
                 # place our var_read_prob back into our self.in_df so we can access it later

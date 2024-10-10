@@ -3,3 +3,4 @@
 *.sw*
 /scratch
 /lib/projectppm
+.ipynb_checkpoints/
